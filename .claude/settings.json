@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5)",
+      "PowerShell(cd \"C:\\\\AI_projects\\\\English-apk\"; Start-Job -ScriptBlock { cd \"C:\\\\AI_projects\\\\English-apk\"; npx vite --port 5173 } | Out-Null; Start-Sleep -Seconds 5; Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5 | Select-Object StatusCode)",
+      "PowerShell(Get-ChildItem \"C:\\\\AI_projects\\\\English-apk\\\\src\" -Recurse | Where-Object { !$_.PSIsContainer } | Select-Object FullName)",
+      "PowerShell(npm show @capacitor-community/text-to-speech versions --json 2>&1)",
+      "PowerShell(npm show @capacitor-community/speech-recognition versions --json 2>&1)",
+      "PowerShell(npm show @capacitor/app versions --json 2>&1)",
+      "PowerShell(npm show \"@capacitor-community/speech-recognition@7.0.1\" peerDependencies 2>&1)",
+      "PowerShell(npm show \"@capacitor-community/text-to-speech@6.1.0\" peerDependencies 2>&1)",
+      "PowerShell(npm show \"@capacitor/app@7.0.0\" peerDependencies 2>&1)",
+      "Bash(npx vite *)",
+      "Bash(npx cap *)",
+      "Bash(.\\\\gradlew assembleDebug)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug 2>&1 | Select-Object -Last 20)",
+      "PowerShell(adb install -r \"c:\\\\AI_projects\\\\English-apk\\\\android\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk\" 2>&1)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb install -r \"c:\\\\AI_projects\\\\English-apk\\\\android\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk\" 2>&1)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb shell am start -n \"com.englishtutor.app/.MainActivity\" 2>&1)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug 2>&1 | Select-Object -Last 5)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug 2>&1 | Select-String -Pattern \"error:|FAILED|Exception\" | Select-Object -First 15)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew --stop 2>&1; Start-Sleep -Seconds 3; .\\\\gradlew assembleDebug 2>&1 | Select-Object -Last 8)",
+      "PowerShell(Get-Process java -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug --no-daemon 2>&1 | Select-Object -Last 8)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb install -r \"c:\\\\AI_projects\\\\English-apk\\\\android\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk\" 2>&1; & $adb shell am start -n \"com.englishtutor.app/.MainActivity\" 2>&1)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug --no-daemon 2>&1 | Select-Object -Last 5)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb install -r \"c:\\\\AI_projects\\\\English-apk\\\\android\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk\"; & $adb shell am start -n \"com.englishtutor.app/.MainActivity\")",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug --no-daemon 2>&1 | Select-Object -Last 4)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb logcat -c; Write-Output \"Logs cleared\")",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb logcat -d -s \"Capacitor/Console\" \"chromium\" \"VoiceRecorder\" \"CapacitorVoiceRecorder\" 2>&1 | Select-Object -Last 60)",
+      "PowerShell($adb = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb logcat -d 2>&1 | Select-String -Pattern \"englishtutor|Whisper|transcri|VoiceRec|Capacitor|chromium|ERROR|Exception\" | Select-Object -Last 50)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\AI_projects\\\\English-apk\\\\android\"; .\\\\gradlew assembleDebug --no-daemon 2>&1 | Select-Object -Last 3)",
+      "Bash(npm list *)",
+      "Bash(npm install *)",
+      "Bash(cat capacitor.config.ts)",
+      "Bash(cat capacitor.config.json)"
+    ]
+  }
+}
