@@ -11,18 +11,17 @@ function renderSummary(text) {
   })
 }
 
-export default function Summary({ data, onRestart }) {
+export default function Summary({ data, onRestart, onProgress }) {
   const { topic, history, summary } = data || {}
   const userTurns = (history || []).filter((m) => m.role === 'user').length
+  const correctionCount = (summary || '').split('\n').filter(l => l.includes('✏️')).length
 
   return (
     <div className="summary-screen">
       <div className="summary-header">
         <div className="summary-icon">🎉</div>
         <h1>Lesson Complete!</h1>
-        <p className="summary-topic">
-          {topic?.emoji} {topic?.label}
-        </p>
+        <p className="summary-topic">{topic?.emoji} {topic?.label}</p>
       </div>
 
       <div className="summary-stats">
@@ -31,8 +30,8 @@ export default function Summary({ data, onRestart }) {
           <span className="stat-label">Replies</span>
         </div>
         <div className="stat-card">
-          <span className="stat-num">{topic?.label?.split(' ')[0]}</span>
-          <span className="stat-label">Topic</span>
+          <span className="stat-num">{correctionCount}</span>
+          <span className="stat-label">Corrections</span>
         </div>
       </div>
 
@@ -41,9 +40,10 @@ export default function Summary({ data, onRestart }) {
         <div className="summary-text">{renderSummary(summary)}</div>
       </div>
 
-      <button className="restart-btn" onClick={onRestart}>
-        New Lesson
-      </button>
+      <div className="summary-actions">
+        <button className="restart-btn" onClick={onRestart}>New Lesson</button>
+        <button className="progress-btn" onClick={onProgress}>📊 Progress</button>
+      </div>
     </div>
   )
 }

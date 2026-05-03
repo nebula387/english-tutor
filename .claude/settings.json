@@ -34,7 +34,11 @@
       "Bash(npm list *)",
       "Bash(npm install *)",
       "Bash(cat capacitor.config.ts)",
-      "Bash(cat capacitor.config.json)"
+      "Bash(cat capacitor.config.json)",
+      "Read(//c/Program Files/**)",
+      "PowerShell($env:JAVA_HOME)",
+      "PowerShell(Test-Path \"C:\\\\Program Files\\\\Android\\\\Android Studio\"; Test-Path \"C:\\\\Program Files\\\\Java\"; Test-Path \"C:\\\\Program Files\\\\Microsoft\\\\jdk-17.0.13.11-hotspot\"; Get-ChildItem \"C:\\\\Program Files\" -Directory | Where-Object { $_.Name -match \"java|jdk|jre\" -or $_.Name -eq \"Android\" } | Select-Object FullName)",
+      "PowerShell(\\(Get-ChildItem \"C:\\\\Program Files\\\\Android\\\\Android Studio\" -Recurse -Filter \"java.exe\" -ErrorAction SilentlyContinue | Select-Object -First 3\\).FullName)"
     ]
   }
 }

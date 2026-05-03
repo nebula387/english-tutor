@@ -18,10 +18,11 @@ function renderVocab(text) {
   })
 }
 
-export default function VocabBlock({ loading, text, error, onStart }) {
+export default function VocabBlock({ loading, text, error, onStart, subtitle }) {
   return (
     <div className="vocab-block">
       <h2 className="vocab-title">📚 Today's Vocabulary</h2>
+      {subtitle && <p className="vocab-subtitle">{subtitle}</p>}
 
       {loading && (
         <div className="vocab-loading">

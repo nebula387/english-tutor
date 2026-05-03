@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App } from '@capacitor/app'
 import { fetchVocabulary, startLesson, sendMessage, requestSummary, transcribeAudio } from '../services/groqService'
 import { speak, stopSpeaking, startRecording, startWebRecognition, requestMicPermission } from '../services/speechService'
+import { getLastSession } from '../services/progressService'
+import { buildVocabContext } from '../services/curriculumService'
 import VocabBlock from '../components/VocabBlock'
 import ChatMessage from '../components/ChatMessage'
 import VoiceButton from '../components/VoiceButton'
@@ -13,7 +15,11 @@ const isSessionEnd = (t) => t.includes('🎉') || t.toLowerCase().includes('grea
 const isNative = Capacitor.isNativePlatform()
 const GRACE_MS = 2000
 
-export default function Lesson({ topic, onEnd, onBack }) {
+function buildCurriculumVocabText(lesson) {
+  return lesson.newWords.map(w => `**${w.word}** — ${w.ru} — ${w.example}`).join('\n')
+}
+
+export default function Lesson({ topic, onEnd, onBack, curriculumLesson }) {
   const [phase, setPhase] = useState('vocab')
   const [vocabText, setVocabText] = useState('')
   const [vocabLoading, setVocabLoading] = useState(true)
@@ -28,6 +34,11 @@ export default function Lesson({ topic, onEnd, onBack }) {
   const [micGranted, setMicGranted] = useState(true)
   const [lastAiText, setLastAiText] = useState('')
   const [error, setError] = useState(null)
+
+  const vocabContext = useMemo(
+    () => curriculumLesson ? buildVocabContext(curriculumLesson) : '',
+    [curriculumLesson]
+  )
 
   const chatEndRef    = useRef(null)
   const recControlRef = useRef(null)
@@ -47,10 +58,15 @@ export default function Lesson({ topic, onEnd, onBack }) {
   useEffect(() => { aiThinkingRef.current   = aiThinking   }, [aiThinking])
 
   useEffect(() => {
+    if (curriculumLesson) {
+      setVocabText(buildCurriculumVocabText(curriculumLesson))
+      setVocabLoading(false)
+      return
+    }
     fetchVocabulary(topic.label)
       .then(t => { setVocabText(t); setVocabLoading(false) })
       .catch(() => { setError('Failed to load vocabulary.'); setVocabLoading(false) })
-  }, [topic])
+  }, [topic, curriculumLesson])
 
   useEffect(() => {
     // Request permission on mount; don't block the button on failure —
@@ -111,8 +127,8 @@ export default function Lesson({ topic, onEnd, onBack }) {
     aiThinkingRef.current = true
     try {
       const reply = isStop
-        ? await requestSummary(history, topic.label)
-        : await sendMessage(history, userText, topic.label)
+        ? await requestSummary(history, topic.label, vocabContext)
+        : await sendMessage(history, userText, topic.label, vocabContext)
       addMessage('assistant', reply)
       speakAndUnlock(reply)
       if (isStop || isSessionEnd(reply)) {
@@ -124,7 +140,7 @@ export default function Lesson({ topic, onEnd, onBack }) {
       setAiThinking(false)
       aiThinkingRef.current = false
     }
-  }, [history, topic, addMessage, speakAndUnlock, onEnd])
+  }, [history, topic, vocabContext, addMessage, speakAndUnlock, onEnd])
 
   // Finalise the recording: stop VoiceRecorder → Whisper → AI reply.
   // Stored in a ref so the grace-period timeout always calls the latest version.
@@ -245,7 +261,7 @@ export default function Lesson({ topic, onEnd, onBack }) {
     setAiThinking(true)
     aiThinkingRef.current = true
     try {
-      const summary = await requestSummary(history, topic.label)
+      const summary = await requestSummary(history, topic.label, vocabContext)
       addMessage('assistant', summary)
       setTimeout(() => onEnd({ topic, history, summary }), 400)
     } catch {
@@ -253,14 +269,15 @@ export default function Lesson({ topic, onEnd, onBack }) {
       setAiThinking(false)
       aiThinkingRef.current = false
     }
-  }, [history, topic, addMessage, onEnd])
+  }, [history, topic, vocabContext, addMessage, onEnd])
 
   const startChat = useCallback(async () => {
     setPhase('chat')
     setAiThinking(true)
     aiThinkingRef.current = true
     try {
-      const firstQ = await startLesson(topic.label)
+      const prev = getLastSession(topic.id)
+      const firstQ = await startLesson(topic.label, prev?.summary || null, vocabContext)
       setMessages([{ role: 'assistant', content: firstQ, id: Date.now() }])
       setHistory([{ role: 'assistant', content: firstQ }])
       speakAndUnlock(firstQ)
@@ -270,7 +287,7 @@ export default function Lesson({ topic, onEnd, onBack }) {
       setAiThinking(false)
       aiThinkingRef.current = false
     }
-  }, [topic, speakAndUnlock])
+  }, [topic, vocabContext, speakAndUnlock])
 
   // ── Vocab phase ───────────────────────────────────────────────────────────
   if (phase === 'vocab') {
@@ -280,7 +297,13 @@ export default function Lesson({ topic, onEnd, onBack }) {
           <button className="back-btn" onClick={onBack}>←</button>
           <span className="topic-badge">{topic.emoji} {topic.label}</span>
         </div>
-        <VocabBlock loading={vocabLoading} text={vocabText} error={error} onStart={startChat} />
+        <VocabBlock
+          loading={vocabLoading}
+          text={vocabText}
+          error={error}
+          onStart={startChat}
+          subtitle={curriculumLesson ? `${curriculumLesson.unitEmoji} ${curriculumLesson.unitTitle} · Lesson ${curriculumLesson.id.replace(/u\d+l/, '')}` : null}
+        />
       </div>
     )
   }

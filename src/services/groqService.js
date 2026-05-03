@@ -43,24 +43,27 @@ export function fetchVocabulary(topic) {
   return callGroq([{ role: 'user', content: prompt }], { temperature: 0.6, max_tokens: 400 })
 }
 
-export function startLesson(topic) {
+export function startLesson(topic, previousSummary = null, vocabContext = '') {
+  const memory = previousSummary
+    ? `\n\nPREVIOUS SESSION CONTEXT (same topic): ${previousSummary.slice(0, 500)}\nBriefly acknowledge what the student worked on before, then ask a new question to continue.`
+    : ''
   return callGroq([
-    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}` },
+    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}${memory}${vocabContext}` },
     { role: 'user', content: '[LESSON START] Ask your first warm-up question to begin.' },
   ], { temperature: 0.8, max_tokens: 200 })
 }
 
-export function sendMessage(history, userMessage, topic) {
+export function sendMessage(history, userMessage, topic, vocabContext = '') {
   return callGroq([
-    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}` },
+    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}${vocabContext}` },
     ...history,
     { role: 'user', content: userMessage },
   ], { temperature: 0.8, max_tokens: 350 })
 }
 
-export function requestSummary(history, topic) {
+export function requestSummary(history, topic, vocabContext = '') {
   return callGroq([
-    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}` },
+    { role: 'system', content: `${SYSTEM_PROMPT}\n\nTopic: ${topic}${vocabContext}` },
     ...history,
     {
       role: 'user',

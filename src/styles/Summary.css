@@ -92,7 +92,14 @@
   font-family: 'Courier New', monospace;
 }
 
+.summary-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .restart-btn {
+  flex: 1;
   padding: 16px;
   border-radius: 14px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
@@ -100,9 +107,22 @@
   font-size: 16px;
   font-weight: 700;
   transition: transform 0.15s;
-  flex-shrink: 0;
 }
 
-.restart-btn:active {
-  transform: scale(0.97);
+.restart-btn:active { transform: scale(0.97); }
+
+.progress-btn {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #a5b4fc;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.progress-btn:active {
+  background: rgba(99, 102, 241, 0.18);
 }
