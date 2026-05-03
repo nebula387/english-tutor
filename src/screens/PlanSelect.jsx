@@ -61,11 +61,12 @@ export default function PlanSelect({ onBack, onStartLesson }) {
                   const isDone = completed.has(lesson.id)
                   const isCurrent = lesson.id === currentLesson?.id
                   const isLocked = !isDone && !isCurrent
+                  const lessonWithUnit = { ...lesson, unitId: unit.id, unitTitle: unit.title, unitEmoji: unit.emoji }
                   return (
                     <button
                       key={lesson.id}
                       className={`plan-lesson-item ${isDone ? 'is-done' : ''} ${isCurrent ? 'is-current' : ''} ${isLocked ? 'is-locked' : ''}`}
-                      onClick={() => !isLocked && onStartLesson(lesson)}
+                      onClick={() => !isLocked && onStartLesson(lessonWithUnit)}
                     >
                       <span className="pli-num">
                         {isDone ? '✓' : idx + 1}
