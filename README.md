@@ -12,6 +12,7 @@ A mobile English learning app for Android built with React + Capacitor. Practice
   <img src="media/photo_2026-05-03_15-20-06.jpg" width="22%" alt="Vocabulary"/>
   <img src="media/photo_2026-05-03_15-19-27.jpg" width="22%" alt="Conversation"/>
   <img src="media/photo_2026-05-03_15-19-57.jpg" width="22%" alt="Lesson summary"/>
+  <img src="media/photo_2026-05-03_15-39-00.jpg" width="22%" alt="Lesson summary"/>
 </p>
 
 ---
